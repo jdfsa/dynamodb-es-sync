@@ -1,3 +1,7 @@
+# SAM
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
+
+
 # elastic search
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-compose-file
 docker pull docker.elastic.co/elasticsearch/elasticsearch:7.6.1
@@ -15,7 +19,7 @@ docker run -d --name elasticsearch ^
 docker pull docker.elastic.co/kibana/kibana:7.6.1
 docker run -d --name kibana ^
   -p 5601:5601 ^
-  --link elasticsearch:elasticsearch_alias ^
+  --link 34ecf665a092:elasticsearch ^
   -e "ELASTICSEARCH_URL=http://elasticsearch:9200" ^
   docker.elastic.co/kibana/kibana:7.6.1
 

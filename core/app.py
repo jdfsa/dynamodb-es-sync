@@ -25,25 +25,28 @@ def lambda_handler(event, context):
 
     """
 
-    eventId = event['Records'][0]['eventID']
-    print(eventId)
+    for record in event['Records']:
+        p = record['dynamodb']['NewImage']
+        id = p['id']['S']
+        body = {
+            'product_id': p['id']['S'],
+            'description': p['description']['S'],
+            'price': p['price']['N'],
+            'timestamp': datetime.now(),
+        }
 
-    doc = {
-        'author': 'kimchy',
-        'text': 'Elasticsearch: cool. bonsai cool.',
-        'timestamp': datetime.now(),
-    }
-    res = es.index(index='test-index', id=1, body=doc)
-    print(res['result'])
-    res = es.get(index='test-index', id=1)
-    print(res['_source'])
+        res = es.index(index='product-index', id=id, body=body)
+        print(res['result'])
 
-    es.indices.refresh(index="test-index")
+        res = es.get(index='product-index', id=id)
+        print(res['_source'])
 
-    res = es.search(index="test-index", body={"query": {"match_all": {}}})
-    print("Got %d Hits:" % res['hits']['total']['value'])
-    for hit in res['hits']['hits']:
-        print("%(timestamp)s %(author)s: %(text)s" % hit["_source"])
+        es.indices.refresh(index="product-index")
+
+        res = es.search(index="product-index", body={"query": {"match_all": {}}})
+        print("Got %d Hits:" % res['hits']['total']['value'])
+        for hit in res['hits']['hits']:
+            print("%(timestamp)s id:%(product_id)s - price:%(price)s" % hit["_source"])
 
     return {
         "statusCode": 200,
