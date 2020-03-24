@@ -1,7 +1,4 @@
-const es = require('elasticsearch');
-const client = new es.Client({
-    host: 'localhost:9200'
-})
+const repository = require('./persistency/ElasticSearchRepository');
 
 /**
  *
@@ -15,7 +12,7 @@ const client = new es.Client({
  * @returns {Object} object - API Gateway Lambda Proxy Output Format
  * 
  */
-exports.lambdaHandler = async (event, context) => {
+exports.handler = async (event, context) => {
     const records = event.Records;
     for (let i = 0; i < records.length; i++) {
         let p = records[i].dynamodb.NewImage;
@@ -28,24 +25,21 @@ exports.lambdaHandler = async (event, context) => {
             'timestamp': Date.now
         };
         
-        const indexPromise = new Promise((resolve, reject) => {
-            client.index({
-                index: 'product-index',
-                id: id,
-                body: body
-            }, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
-        });
-
-        await indexPromise
+        await repository.index('product-index', id, body)
             .then(res => console.log(res))
             .catch(err => console.log(err));
         
-        // await client.indices.refresh({ index: 'product-index' });
+        await repository.get('product-index', id)
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+
+        await repository.search('product-index', {"query": {"match_all": {}}})
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));
     }
 };
 
 var event = require('../events/trigger-event.json');
-exports.lambdaHandler(event, null);
+exports.handler(event, null);
