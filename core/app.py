@@ -1,18 +1,13 @@
 import json
 from datetime import datetime
-from elasticsearch import Elasticsearch
-from ssl import create_default_context
+
+from .es_config import conn
 
 # elasticsearch connection
 # https://elasticsearch-py.readthedocs.io/en/master/
-es = Elasticsearch(
-    ['localhost'],
-    scheme='http',
-    port=9200
-)
+es = conn()
 
 
-# handler
 def lambda_handler(event, context):
     """
     Summary line.
