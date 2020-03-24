@@ -33,11 +33,13 @@ exports.handler = async (event, context) => {
             .then(res => console.log(res))
             .catch(err => console.log(err));
 
-        await repository.search('product-index', {"query": {"match_all": {}}})
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        await repository.search('product-index', {
+            'query': {
+                'match_all': {}
+            }
+        }).then(res => {
+            console.log(res);
+        }).catch(err => console.log(err));
     }
 };
 
