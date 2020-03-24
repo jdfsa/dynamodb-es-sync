@@ -4,14 +4,14 @@ Description: >
   dynamo-es-sync
 
   Sample SAM Template for dynamo-es-sync
-
+  
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-
+  
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -32,12 +32,12 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 
-  DynamoElasticSearchSync:
+  HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: core/
-      Handler: app.lambda_handler
-      Runtime: python3.8
+      CodeUri: hello-world/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
       Policies: AWSLambdaDynamoDBExecutionRole
       Events:
         Stream:
