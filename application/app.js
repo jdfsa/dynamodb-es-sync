@@ -1,4 +1,5 @@
 const repository = require('./persistency/ElasticSearchRepository');
+const Product = require('./model/Product')
 
 /**
  *
@@ -13,23 +14,24 @@ const repository = require('./persistency/ElasticSearchRepository');
  * 
  */
 exports.handler = async (event, context) => {
+    
     const records = event.Records;
     for (let i = 0; i < records.length; i++) {
-        let p = records[i].dynamodb.NewImage;
-        
-        let id = p.id.S;
+
+        let p = Product.fromDynamo(records[i].dynamodb.NewImage);
+
         let body = {
-            'product_id': id,
-            'description': p.description.S,
-            'price': p.price.N,
-            'timestamp': Date.now
+            'product_id': p.id,
+            'description': p.description,
+            'price': p.price,
+            'timestamp': Date.now()
         };
         
-        await repository.index('product-index', id, body)
+        await repository.index('product-index', p.id, body)
             .then(res => console.log(res))
             .catch(err => console.log(err));
         
-        await repository.get('product-index', id)
+        await repository.get('product-index', p.id)
             .then(res => console.log(res))
             .catch(err => console.log(err));
 
