@@ -1,5 +1,7 @@
-const repository = require('./persistency/ElasticSearchRepository');
-const Product = require('./model/Product')
+'use strict';
+
+const esRepository = require('./persistency/ElasticSearchRepository');
+const Product = require('./model/Product');
 
 /**
  *
@@ -14,35 +16,22 @@ const Product = require('./model/Product')
  * 
  */
 exports.handler = async (event, context) => {
-    
     const records = event.Records;
-    for (let i = 0; i < records.length; i++) {
-
-        let p = Product.fromDynamo(records[i].dynamodb.NewImage);
-
-        let body = {
-            'product_id': p.id,
-            'description': p.description,
-            'price': p.price,
-            'timestamp': Date.now()
-        };
-        
-        await repository.index('product-index', p.id, body)
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
-        
-        await repository.get('product-index', p.id)
-            .then(res => console.log(res))
-            .catch(err => console.log(err));
-
-        await repository.search('product-index', {
-            'query': {
-                'match_all': {}
-            }
-        }).then(res => {
-            console.log(res);
-        }).catch(err => console.log(err));
+    if (!records || records.length == 0) {
+        console.info("Nenhum registro válido informado");
     }
+    
+    return Promise.all(records.map(record => {
+        let product = Product.fromDynamo(record.dynamodb.NewImage);
+
+        let body = product.toPersistency({
+            'timestamp': Date.now()
+        });
+        
+        return esRepository.index('product-index', product.id, body)
+            .then(res => console.info(res))
+            .catch(err => console.error(err));
+    }));
 };
 
 var event = require('../events/trigger-event.json');

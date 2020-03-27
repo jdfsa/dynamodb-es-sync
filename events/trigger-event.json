@@ -18,10 +18,10 @@
             "S": "1234-1234-1234-1234"
           },
           "description": {
-            "S": "New test product"
+            "S": "New test product with the name and price changed"
           },
           "price": {
-           "N": 234.56
+           "N": 5000.0
           }
         },
         "SequenceNumber": "100000000007063771489",

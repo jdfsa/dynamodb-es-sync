@@ -16,30 +16,6 @@ const ElasticSearchRepository = class ElasticSearchRepository {
             });
         });
     }
-
-    get(index, id) {
-        return new Promise((resolve, reject) => {
-            client.get({
-                index: index,
-                id: id
-            }, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
-        });
-    }
-
-    search(index, query) {
-        return new Promise((resolve, reject) => {
-            client.search({
-                index: index,
-                body: query
-            }, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
-        });
-    }
 };
 
 module.exports = new ElasticSearchRepository();
