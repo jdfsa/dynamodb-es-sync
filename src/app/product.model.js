@@ -8,7 +8,7 @@ module.exports = class Product {
     }
 
     toPersistency(template) {
-        return Object.assign(template, {
+        return Object.assign(template || {}, {
             'product_id': this.id,
             'description': this.description,
             'price': this.price
