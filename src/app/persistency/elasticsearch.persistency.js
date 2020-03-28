@@ -1,3 +1,4 @@
+const util = require('util');
 const es = require('elasticsearch');
 const client = new es.Client({
     host: 'localhost:9200'
@@ -11,9 +12,12 @@ class ElasticSearchRepository {
                 id: id,
                 body: body
             };
-            console.debug('Enviando para o ElasticSearch:', obj);
+            console.debug('Enviando para o ElasticSearch:', util.inspect(obj));
             client.index(obj, (err, res) => {
-                if (err) return reject(err);
+                if (err) {
+                    reject(err);
+                    return;
+                }
                 resolve(res);
             });
         });

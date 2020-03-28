@@ -1,7 +1,11 @@
 'use strict';
 
+const util = require('util');
 const es = require('./persistency/elasticsearch.persistency');
 const Product = require('./product.model');
+
+// configura o inspect do 'util' para logar todos os níveis de um objeto
+util.inspect.defaultOptions.depth = null;
 
 /**
  * Handler para processamento de eventos gerados pelo DyamoDB
@@ -19,12 +23,12 @@ const Product = require('./product.model');
 exports.handler = async (event, context) => {
     return process(event, context)
         .then(res => {
-            console.info('Evento processado com sucesso:', res);
+            console.info('Evento processado com sucesso:', util.inspect(res));
             return Promise.resolve(res);
         })
         .catch(err => {
-            console.error(err);
-            return Promise.reject(res);
+            console.error(util.inspect(err));
+            return Promise.reject(err);
         });
 };
 
@@ -35,7 +39,7 @@ exports.handler = async (event, context) => {
  * @returns {Promise} object - API Gateway Lambda Proxy Output Format
  */
 async function process(event, context) {
-    console.debug('Recebido evento para processar:', event);
+    console.debug('Recebido evento para processar:', util.inspect(event));
 
     if (!event) {
         console.warn('Recebido um evento inválido e será ignorado');
@@ -55,7 +59,7 @@ async function process(event, context) {
         }
 
         let product = Product.fromDynamo(record.dynamodb.NewImage);
-        console.debug('Produto a ser persistido:', product);
+        console.debug('Produto a ser persistido:', util.inspect(product));
 
         let body = product.toPersistency({
             'timestamp': Date.now()

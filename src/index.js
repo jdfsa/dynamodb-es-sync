@@ -8,5 +8,5 @@ app.handler(event, null)
         console.info(res);
     })
     .catch(err => {
-        console.error(err)
+        console.error(err);
     });
