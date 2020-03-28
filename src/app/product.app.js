@@ -51,6 +51,8 @@ async function run(event, context) {
     }
     
     return Promise.all(records.map(record => {
+        console.debug('Processando item:', util.inspect(record));
+
         if (!record.dynamodb || !record.dynamodb.NewImage) {
             console.warn('Evento recebido não é um evento DynamoDB válido');
             return Promise.resolve({});
@@ -66,3 +68,5 @@ async function run(event, context) {
         return es.index('product-index', product.id, body);
     }));
 }
+
+exports.es = () => es;
