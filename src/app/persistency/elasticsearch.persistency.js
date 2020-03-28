@@ -6,11 +6,13 @@ const client = new es.Client({
 class ElasticSearchRepository {
     index(index, id, body) {
         return new Promise((resolve, reject) => {
-            client.index({
+            let obj = {
                 index: index,
                 id: id,
                 body: body
-            }, (err, res) => {
+            };
+            console.debug('Enviando para o ElasticSearch:', obj);
+            client.index(obj, (err, res) => {
                 if (err) return reject(err);
                 resolve(res);
             });

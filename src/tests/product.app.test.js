@@ -3,11 +3,10 @@
 const app = require('../app/product.app');
 const chai = require('chai');
 const expect = chai.expect;
-var event, context;
 
-describe('Tests index', function () {
-    it('verifies successful response', async () => {
-        //const result = await app.handler(event, context)
+describe('product.app.test', function () {
+    it('verifies behavior on empty event body', async () => {
+        const result = await app.handler(null, null);
 
         //expect(result).to.be.an('object');
         //expect(result.statusCode).to.equal(200);
