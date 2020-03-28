@@ -4,7 +4,7 @@ const es = require('elasticsearch');
 /**
  * Classe para conexão com o ElasticSearch
  */
-module.exports = class ElasticSearchRepository {
+exports.ElasticSearchRepository = class ElasticSearchRepository {
     #client;
 
     /**

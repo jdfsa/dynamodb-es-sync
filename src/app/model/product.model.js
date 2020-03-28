@@ -3,7 +3,7 @@
 /**
  * Model de produto
  */
-module.exports = class Product {
+exports.Product = class Product {
     
     /**
      * Inicialização de produto

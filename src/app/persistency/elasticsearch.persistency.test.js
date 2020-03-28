@@ -2,23 +2,16 @@
 
 const proxyquire = require('proxyquire');
 const chai = require('chai');
-const path = require('path');
 
 const expect = chai.expect;
 
 describe('elasticsearch.persistency.test', () => {
 
-    let componentPath = null;
-
-    before(() => {
-        componentPath = path.join(process.cwd(), '/src/app/persistency', 'elasticsearch.persistency');
-    });
-
     it('constructor with default host', async () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
             .load('./elasticsearch.persistency', {
                 'elasticsearch': mockEs(),
-            });
+            }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
         expect(component.client().params).to.be.eqls({
             host: 'localhost:9200'
@@ -29,7 +22,7 @@ describe('elasticsearch.persistency.test', () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
             .load('./elasticsearch.persistency', {
                 'elasticsearch': mockEs(),
-            });
+            }).ElasticSearchRepository;
         const component = new ElasticSearchRepository('fake-host:9999');
         expect(component.client().params).to.be.eqls({
             host: 'fake-host:9999'
@@ -43,7 +36,7 @@ describe('elasticsearch.persistency.test', () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
             .load('./elasticsearch.persistency', {
                 'elasticsearch': mockEs(undefined, expectedResult),
-            });
+            }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
         try {
             const result = await component.index('test-index', 'fake-id', expectedResult);
@@ -61,7 +54,7 @@ describe('elasticsearch.persistency.test', () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
             .load('./elasticsearch.persistency', {
                 'elasticsearch': mockEs(expectedResult),
-            });
+            }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
         try {
             await component.index('test-index', 'fake-id', expectedResult);
@@ -72,14 +65,14 @@ describe('elasticsearch.persistency.test', () => {
     });
 });
 
-function mockEs(errResult, sucessResult) {
+function mockEs(err, success) {
     return {
         Client: class ClientMock {
             constructor(params) {
                 this.params = params;
             }
             index(obj, callback) {
-                callback(errResult, sucessResult);
+                callback(err, success);
             }
         }
     };

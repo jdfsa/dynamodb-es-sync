@@ -1,6 +1,6 @@
 'use strict';
 
-const Product = require('./product.model');
+const Product = require('./product.model').Product;
 
 const chai = require('chai');
 const expect = chai.expect;
