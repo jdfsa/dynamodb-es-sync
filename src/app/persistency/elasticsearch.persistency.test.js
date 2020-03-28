@@ -18,13 +18,11 @@ describe('elasticsearch.persistency.test', () => {
         const expectedResult = {
             'fake-body-item': 'fake-item-value'
         };
-
         const ElasticSearchRepository = proxyquire.noCallThru()
             .load('./elasticsearch.persistency', {
                 'elasticsearch': mockEs(undefined, expectedResult),
             });
         const component = new ElasticSearchRepository('http://fake-endpoint');
-
         try {
             const result = await component.index('test-index', 'fake-id', expectedResult);
             expect(result).to.be.eqls(expectedResult);
