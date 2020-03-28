@@ -2,7 +2,7 @@
 
 const util = require('util');
 const ElasticSearchRepository = require('./persistency/elasticsearch.persistency');
-const Product = require('./product.model');
+const Product = require('./model/product.model');
 
 // configura o inspect do 'util' para logar todos os níveis de um objeto
 util.inspect.defaultOptions.depth = null;
