@@ -23,7 +23,7 @@ describe('product.model.test', function () {
             description: 'description test',
             price: 9999.99
         };
-        const actual = Product.fromDynamo({
+        const actual = Product.fromDynamoDbFormat({
             "id": {
                 "S": expected.id
             },
@@ -44,7 +44,7 @@ describe('product.model.test', function () {
             'price': 9999.99
         };
         const product = new Product(expected.product_id, expected.description, expected.price);
-        expect(product.toPersistency()).to.be.eqls(expected);
+        expect(product.toPersistencyFormat()).to.be.eqls(expected);
     });
 
     it('verifies toPersistency model with extendend properties', async () => {
@@ -59,7 +59,7 @@ describe('product.model.test', function () {
             'extended-property-3': 12345
         };
         const product = new Product(expected.product_id, expected.description, expected.price);
-        expect(product.toPersistency(extension)).to.be.eqls(
+        expect(product.toPersistencyFormat(extension)).to.be.eqls(
             Object.assign(extension, expected)
         );
     });
