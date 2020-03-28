@@ -12,20 +12,19 @@ module.exports = class ElasticSearchRepository {
      * @param {String} host - endpoint para conexão com o ElasticSearch
      */
     constructor(host) {
-        if (!this.#client) {
-            host = host || 'localhost:9200';
-            this.#client = new es.Client({
-                host: 'localhost:9200'
-            });
-        }
+        host = host || 'localhost:9200';
+        this.#client = new es.Client({
+            host: 'localhost:9200'
+        });
     }
 
     /**
-     * Cataloga um índice no ElasticSearch
+     * Insere ou atualiza um item no ElasticSearch
      * 
-     * @param {String} index 
-     * @param {String|Number} id 
-     * @param {Object} body 
+     * @param {String} index índice para catalogação
+     * @param {String|Number} id do item a ser catalogado
+     * @param {Object} body conteúdo do item a ser catalogado
+     * @returns {Promise} com o conteúdo de retorno
      */
     index(index, id, body) {
         return new Promise((resolve, reject) => {

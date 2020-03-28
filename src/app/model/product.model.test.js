@@ -5,7 +5,7 @@ const Product = require('./product.model');
 const chai = require('chai');
 const expect = chai.expect;
 
-describe('product.model.test', function () {
+describe('product.model.test', () => {
     
     it('verifies class constructor', async () => {
         const expected = {
