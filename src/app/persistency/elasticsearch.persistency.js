@@ -12,9 +12,8 @@ module.exports = class ElasticSearchRepository {
      * @param {String} host - endpoint para conexão com o ElasticSearch
      */
     constructor(host) {
-        host = host || 'localhost:9200';
         this.#client = new es.Client({
-            host: 'localhost:9200'
+            'host': host || 'localhost:9200'
         });
     }
 
@@ -42,5 +41,12 @@ module.exports = class ElasticSearchRepository {
                 resolve(res);
             });
         });
+    }
+
+    /**
+     * Retorna o client criado localmente
+     */
+    client() {
+        return this.#client;
     }
 };
