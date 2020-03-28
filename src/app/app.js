@@ -33,6 +33,3 @@ exports.handler = async (event, context) => {
             .catch(err => console.error(err));
     }));
 };
-
-var event = require('../events/trigger-event.json');
-exports.handler(event, null);
