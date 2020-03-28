@@ -18,10 +18,15 @@ const Product = require('./product.model');
 exports.handler = async (event, context) => {
     const records = event.Records;
     if (!records || records.length == 0) {
-        console.info("Nenhum registro válido informado");
+        console.info('Nenhum registro válido informado');
+        return Promise.resolve('Nenhum registro válido informado');
     }
     
     return Promise.all(records.map(record => {
+        if (!record.dynamodb || !record.dynamodb.NewImage) {
+            return Promise.resolve('Não é um evento de DynamoDB esperado');
+        }
+
         let product = Product.fromDynamo(record.dynamodb.NewImage);
 
         let body = product.toPersistency({
