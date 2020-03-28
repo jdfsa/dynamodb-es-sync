@@ -1,7 +1,7 @@
 'use strict';
 
-const esRepository = require('./persistency/ElasticSearchRepository');
-const Product = require('./model/Product');
+const esRepository = require('./persistency/elasticsearch.persistency');
+const Product = require('./product.model');
 
 /**
  *

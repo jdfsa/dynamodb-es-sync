@@ -3,7 +3,7 @@ const client = new es.Client({
     host: 'localhost:9200'
 });
 
-const ElasticSearchRepository = class ElasticSearchRepository {
+class ElasticSearchRepository {
     index(index, id, body) {
         return new Promise((resolve, reject) => {
             client.index({
