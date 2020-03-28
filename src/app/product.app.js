@@ -1,8 +1,8 @@
 'use strict';
 
 const util = require('util');
-const ElasticSearchRepository = require('./persistency/elasticsearch.persistency');
-const Product = require('./model/product.model');
+const ElasticSearchRepository = require('./persistency/elasticsearch.persistency').ElasticSearchRepository;
+const Product = require('./model/product.model').Product;
 
 // configura o inspect do 'util' para logar todos os níveis de um objeto
 util.inspect.defaultOptions.depth = null;
@@ -52,7 +52,7 @@ async function run(event, context) {
     
     return Promise.all(records.map(record => {
         if (!record.dynamodb || !record.dynamodb.NewImage) {
-            console.warn('Evento recebido não é um evento DynamoDB esperado');
+            console.warn('Evento recebido não é um evento DynamoDB válido');
             return Promise.resolve({});
         }
 

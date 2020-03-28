@@ -1,21 +1,73 @@
 'use strict';
 
-const app = require('./product.app');
+const proxyquire = require('proxyquire');
 const chai = require('chai');
+
 const expect = chai.expect;
 
 describe('product.app.test', function () {
-    it('verifies behavior on empty event body', async () => {
-        const result = await app.handler(null, null);
+    
+    it('should return empty in case of null event', async () => {
+        const component = proxyquire.noCallThru()
+            .load('./product.app', {
+                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+                    'fake-result-item': 'fake-item-value'
+                }),
+            });
+        try {
+            const result = await component.handler(null, null);
+            expect(result).to.be.empty;
+        }
+        catch (e) {
+            return Promise.reject(e);
+        }
+    });
 
-        //expect(result).to.be.an('object');
-        //expect(result.statusCode).to.equal(200);
-        //expect(result.body).to.be.an('string');
+    it('should return empty in case of no Records', async () => {
+        const component = proxyquire.noCallThru()
+            .load('./product.app', {
+                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+                    'fake-result-item': 'fake-item-value'
+                }),
+            });
+        try {
+            const result = await component.handler({}, null);
+            expect(result).to.be.empty;
+        }
+        catch (e) {
+            return Promise.reject(e);
+        }
+    });
 
-        //let response = JSON.parse(result.body);
-
-        //expect(response).to.be.an('object');
-        //expect(response.message).to.be.equal("hello world");
-        // expect(response.location).to.be.an("string");
+    it('should return empty in case of empty Records', async () => {
+        const component = proxyquire.noCallThru()
+            .load('./product.app', {
+                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+                    'fake-result-item': 'fake-item-value'
+                }),
+            });
+        try {
+            const result = await component.handler({
+                Records: []
+            }, null);
+            expect(result).to.be.empty;
+        }
+        catch (e) {
+            return Promise.reject(e);
+        }
     });
 });
+
+function mockPersistency(err, success) {
+    return {
+        ElasticSearchRepository: class MockElasticSearchRepository {
+            constructor(host) { }
+            index(index, id, body) {
+                if (err) {
+                    return Promise.reject(err);
+                }
+                return Promise.resolve(success);
+            }
+        }
+    };
+}
