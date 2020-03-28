@@ -1,6 +1,6 @@
 'use strict';
 
-const esRepository = require('./persistency/elasticsearch.persistency');
+const es = require('./persistency/elasticsearch.persistency');
 const Product = require('./product.model');
 
 /**
@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
             'timestamp': Date.now()
         });
         
-        return esRepository.index('product-index', product.id, body)
+        return es.index('product-index', product.id, body)
             .then(res => console.info(res))
             .catch(err => console.error(err));
     }));
