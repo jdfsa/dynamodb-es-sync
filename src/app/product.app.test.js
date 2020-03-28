@@ -1,6 +1,6 @@
 'use strict';
 
-const app = require('../app/product.app');
+const app = require('./product.app');
 const chai = require('chai');
 const expect = chai.expect;
 

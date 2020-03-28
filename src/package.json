@@ -10,7 +10,7 @@
     "elasticsearch": "^16.7.1"
   },
   "scripts": {
-    "test": "mocha tests/**/*.test.js"
+    "test": "mocha app/**/*.test.js"
   },
   "devDependencies": {
     "chai": "^4.2.0",
