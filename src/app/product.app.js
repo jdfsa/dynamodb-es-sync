@@ -1,27 +1,25 @@
 'use strict';
 
 const util = require('util');
-const es = require('./persistency/elasticsearch.persistency');
+const ElasticSearchRepository = require('./persistency/elasticsearch.persistency');
 const Product = require('./product.model');
 
 // configura o inspect do 'util' para logar todos os níveis de um objeto
 util.inspect.defaultOptions.depth = null;
 
+// configura a conexão como ElasticSearch
+const es = new ElasticSearchRepository(process.env.ELASTIC_SEARCH_HOST);
+
 /**
  * Handler para processamento de eventos gerados pelo DyamoDB
  * 
- * Event doc: https://docs.aws.amazon.com/lambda/latest/dg/with-ddb-example.html
- * @param {Object} event - API Gateway Lambda Proxy Input Format
- *
- * Context doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html 
- * @param {Object} context
- *
- * Return doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html
- * @returns {Promise} object - API Gateway Lambda Proxy Output Format
+ * @param {Object} event - input de evento gerado DynamoDB Stream (https://docs.aws.amazon.com/lambda/latest/dg/with-ddb-example.html)
+ * @param {Object} context contexto de invoke da função lambda (doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html)
+ * @returns {Promise} doc: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-handler.html
  * 
  */
 exports.handler = async (event, context) => {
-    return process(event, context)
+    return run(event, context)
         .then(res => {
             console.info('Evento processado com sucesso:', util.inspect(res));
             return Promise.resolve(res);
@@ -38,7 +36,7 @@ exports.handler = async (event, context) => {
  * @param {Object} context - contexto lambda
  * @returns {Promise} object - API Gateway Lambda Proxy Output Format
  */
-async function process(event, context) {
+async function run(event, context) {
     console.debug('Recebido evento para processar:', util.inspect(event));
 
     if (!event) {
@@ -58,10 +56,10 @@ async function process(event, context) {
             return Promise.resolve({});
         }
 
-        let product = Product.fromDynamo(record.dynamodb.NewImage);
+        let product = Product.fromDynamoDbFormat(record.dynamodb.NewImage);
         console.debug('Produto a ser persistido:', util.inspect(product));
 
-        let body = product.toPersistency({
+        let body = product.toPersistencyFormat({
             'timestamp': Date.now()
         });
         
