@@ -12,17 +12,13 @@ Globals:
 
 Resources:
   
-  DynamoDBTable:
+  ProductDynamoDbTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: Product
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
-        - AttributeName: description
-          AttributeType: S
-        - AttributeName: price
-          AttributeType: N
       KeySchema:
         - AttributeName: id
           KeyType: HASH
@@ -30,30 +26,39 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
       StreamSpecification:
-        StreamViewType: NEW_IMAGE
+        StreamViewType: NEW_AND_OLD_IMAGES
 
-  HelloWorldFunction:
+  ProductElasticSearchSyncFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: src/app/
-      Handler: app.handler
+      CodeUri: src/
+      Handler: app/product.app.handler
       Runtime: nodejs12.x
       Policies: AWSLambdaDynamoDBExecutionRole
-      Events:
-        Stream:
-          Type: DynamoDB
-          Properties:
-            Stream: !GetAtt DynamoDBTable.StreamArn
-            BatchSize: 1
-            StartingPosition: TRIM_HORIZON
+      # Events:
+      #   Stream:
+      #     Type: DynamoDB
+      #     Properties:
+      #       Stream: !GetAtt DynamoDBTable.StreamArn
+      #       BatchSize: 1
+      #       StartingPosition: TRIM_HORIZON
+  
+  ProductEventSourceMapping:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties: 
+      BatchSize: 1
+      Enabled: true
+      EventSourceArn: !GetAtt ProductDynamoDbTable.Arn
+      FunctionName: !GetAtt ProductElasticSearchSyncFunction.Arn
+      StartingPosition: TRIM_HORIZON
 
 Outputs:
-  DynamoTableDbArn:
+  ProductDynamoDbTableArn:
     Description: "Generated DynamoDB Table ARN"
-    Value: !GetAtt DynamoDBTable.Arn
-  DynamoStreamArn:
-    Description: "Generated DynamoDB Stream ARN"
-    Value: !GetAtt DynamoDBTable.StreamArn
-  DynamoElasticSearchSyncFunctionArn:
+    Value: !GetAtt ProductDynamoDbTable.Arn
+  # ProductDynamoDbStreamArn:
+  #   Description: "Generated DynamoDB Stream ARN"
+  #   Value: !GetAtt ProductEventSourceMapping.StreamArn
+  ProductElasticSearchSyncFunctionArn:
     Description: "Lambda Function ARN"
-    Value: !GetAtt DynamoElasticSearchSync.Arn
+    Value: !GetAtt ProductElasticSearchSyncFunction.Arn
