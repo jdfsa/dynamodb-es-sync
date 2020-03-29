@@ -1,11 +1,11 @@
 'use strict';
 
-const Product = require('./product.model').Product;
+const Product = require('./product-model').Product;
 
 const chai = require('chai');
 const expect = chai.expect;
 
-describe('product.model.test', () => {
+describe('product-model.test', () => {
     
     it('verifies class constructor', async () => {
         const expected = {

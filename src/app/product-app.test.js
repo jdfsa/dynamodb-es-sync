@@ -3,16 +3,16 @@
 const proxyquire = require('proxyquire');
 const chai = require('chai');
 
-const Product = require('./model/product.model').Product;
+const Product = require('./model/product-model').Product;
 
 const expect = chai.expect;
 
-describe('product.app.test', function () {
+describe('product-app.test', function () {
     
     it('should return empty in case of null event', async () => {
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': mockPersistency(undefined, {
                     'fake-result-item': 'fake-item-value'
                 }),
             });
@@ -27,8 +27,8 @@ describe('product.app.test', function () {
 
     it('should return empty in case of no Records', async () => {
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': mockPersistency(undefined, {
                     'fake-result-item': 'fake-item-value'
                 }),
             });
@@ -43,8 +43,8 @@ describe('product.app.test', function () {
 
     it('should return empty in case of empty Records', async () => {
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': mockPersistency(undefined, {
                     'fake-result-item': 'fake-item-value'
                 }),
             });
@@ -61,8 +61,8 @@ describe('product.app.test', function () {
 
     it('should ignore in case of no dynamo record', async () => {
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': mockPersistency(undefined, {
                     'fake-result-item': 'fake-item-value'
                 }),
             });
@@ -81,8 +81,8 @@ describe('product.app.test', function () {
 
     it('should ignore in case of no NewImage in dynamo record', async () => {
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': mockPersistency(undefined, {
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': mockPersistency(undefined, {
                     'fake-result-item': 'fake-item-value'
                 }),
             });
@@ -118,8 +118,8 @@ describe('product.app.test', function () {
         }];
         const persistency = mockPersistency(undefined, expectedResult);
         const component = proxyquire.noCallThru()
-            .load('./product.app', {
-                './persistency/elasticsearch.persistency': persistency,
+            .load('./product-app', {
+                './persistency/elasticsearch-persistency': persistency,
             });
         try {
             const result = await component.handler({

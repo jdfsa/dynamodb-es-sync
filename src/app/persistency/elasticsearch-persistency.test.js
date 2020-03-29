@@ -5,11 +5,11 @@ const chai = require('chai');
 
 const expect = chai.expect;
 
-describe('elasticsearch.persistency.test', () => {
+describe('elasticsearch-persistency.test', () => {
 
     it('constructor with default host', async () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
-            .load('./elasticsearch.persistency', {
+            .load('./elasticsearch-persistency', {
                 'elasticsearch': mockEs(),
             }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
@@ -20,7 +20,7 @@ describe('elasticsearch.persistency.test', () => {
 
     it('constructor with custom host', async () => {
         const ElasticSearchRepository = proxyquire.noCallThru()
-            .load('./elasticsearch.persistency', {
+            .load('./elasticsearch-persistency', {
                 'elasticsearch': mockEs(),
             }).ElasticSearchRepository;
         const component = new ElasticSearchRepository('fake-host:9999');
@@ -34,7 +34,7 @@ describe('elasticsearch.persistency.test', () => {
             'fake-body-item': 'fake-item-value'
         };
         const ElasticSearchRepository = proxyquire.noCallThru()
-            .load('./elasticsearch.persistency', {
+            .load('./elasticsearch-persistency', {
                 'elasticsearch': mockEs(undefined, expectedResult),
             }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
@@ -52,7 +52,7 @@ describe('elasticsearch.persistency.test', () => {
             'fake-body-item': 'fake-item-value'
         };
         const ElasticSearchRepository = proxyquire.noCallThru()
-            .load('./elasticsearch.persistency', {
+            .load('./elasticsearch-persistency', {
                 'elasticsearch': mockEs(expectedResult),
             }).ElasticSearchRepository;
         const component = new ElasticSearchRepository();
