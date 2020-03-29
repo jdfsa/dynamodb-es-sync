@@ -1,8 +1,8 @@
 'use strict';
 
 const util = require('util');
-const ElasticSearchRepository = require('./persistency/elasticsearch.persistency').ElasticSearchRepository;
-const Product = require('./model/product.model').Product;
+const ElasticSearchRepository = require('./persistency/elasticsearch-persistency').ElasticSearchRepository;
+const Product = require('./model/product-model').Product;
 
 // configura o inspect do 'util' para logar todos os níveis de um objeto
 util.inspect.defaultOptions.depth = null;
