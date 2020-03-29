@@ -45,7 +45,6 @@ Resources:
         - ProductElasticSearchSyncFunction
         - Arn
       StartingPosition: TRIM_HORIZON
-      MaximumRetryAttempts: 1
 Outputs:
   ProductDynamoDbTableArn:
     Description: Generated DynamoDB Table ARN

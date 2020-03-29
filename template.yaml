@@ -51,7 +51,6 @@ Resources:
       EventSourceArn: !GetAtt ProductDynamoDbTable.StreamArn
       FunctionName: !GetAtt ProductElasticSearchSyncFunction.Arn
       StartingPosition: TRIM_HORIZON
-      MaximumRetryAttempts: 1
 
 Outputs:
   ProductDynamoDbTableArn:
