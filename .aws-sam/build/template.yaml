@@ -28,7 +28,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ProductElasticSearchSyncFunction
-      Handler: product.app.handler
+      Handler: app/product.app.handler
       Runtime: nodejs12.x
       Policies: AWSLambdaDynamoDBExecutionRole
   ProductEventSourceMapping:
