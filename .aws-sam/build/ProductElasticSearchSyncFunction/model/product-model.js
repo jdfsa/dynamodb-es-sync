@@ -1,5 +1,7 @@
 'use strict';
 
+const aws = require('aws-sdk');
+
 /**
  * Model de produto
  */
@@ -7,15 +9,9 @@ exports.Product = class Product {
     
     /**
      * Inicialização de produto
-     * 
-     * @param {String} id identificação do produto
-     * @param {String} description descrição do produto
-     * @param {Number} price preço do produto
      */
-    constructor(id, description, price) {
-        this.id = id;
-        this.description = description;
-        this.price = price;
+    constructor(obj) {
+        Object.assign(this, obj || {}, this);
     }
 
     /**
@@ -24,11 +20,7 @@ exports.Product = class Product {
      * @param {Object} template extensão ao modelo a ser retornado
      */
     toPersistencyFormat(template) {
-        return Object.assign(template || {}, {
-            'product_id': this.id,
-            'description': this.description,
-            'price': this.price
-        });
+        return Object.assign(template || {}, this);
     }
 
     /**
@@ -37,9 +29,8 @@ exports.Product = class Product {
      * @param {Object} p dados do produto
      * @returns {Product} dados do produto
      */
-    static fromDynamoDbFormat = (p) => new Product(
-        p.id.S,
-        p.description.S,
-        p.price.N
-    );
+    static fromDynamoDbFormat = (p) => {
+        const obj = aws.DynamoDB.Converter.unmarshall(p);
+        return new Product(obj);
+    };
 };
