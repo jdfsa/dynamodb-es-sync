@@ -39,7 +39,7 @@ Resources:
       EventSourceArn:
         Fn::GetAtt:
         - ProductDynamoDbTable
-        - Arn
+        - StreamArn
       FunctionName:
         Fn::GetAtt:
         - ProductElasticSearchSyncFunction

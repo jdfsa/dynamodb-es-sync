@@ -39,7 +39,7 @@ Resources:
       #   Stream:
       #     Type: DynamoDB
       #     Properties:
-      #       Stream: !GetAtt DynamoDBTable.StreamArn
+      #       Stream: !GetAtt ProductDynamoDbTable.StreamArn
       #       BatchSize: 1
       #       StartingPosition: TRIM_HORIZON
   
@@ -48,7 +48,7 @@ Resources:
     Properties: 
       BatchSize: 1
       Enabled: true
-      EventSourceArn: !GetAtt ProductDynamoDbTable.Arn
+      EventSourceArn: !GetAtt ProductDynamoDbTable.StreamArn
       FunctionName: !GetAtt ProductElasticSearchSyncFunction.Arn
       StartingPosition: TRIM_HORIZON
 
