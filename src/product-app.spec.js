@@ -7,7 +7,7 @@ const Product = require('./model/product-model').Product;
 
 const expect = chai.expect;
 
-describe('product-app.test', function () {
+describe('product-app.test', () => {
     
     it('should return empty in case of null event', async () => {
         const component = proxyquire.noCallThru()
