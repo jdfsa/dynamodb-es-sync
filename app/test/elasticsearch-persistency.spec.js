@@ -4,7 +4,7 @@ const chai = require('chai');
 const nock = require('nock');
 const uuid = require('uuid').v4;
 
-const ElasticSearchRepository = require('./elasticsearch-persistency').ElasticSearchRepository;
+const ElasticSearchRepository = require('../src/elasticsearch-persistency').ElasticSearchRepository;
 const expect = chai.expect;
 
 describe('elasticsearch-persistency.test', () => {
@@ -49,7 +49,7 @@ describe('elasticsearch-persistency.test', () => {
             await component.index('test-index', id, expectedResult);
         }
         catch (e) {
-            expect(e).to.be.eqls(expectedResult);
+            expect(JSON.parse(e.body)).to.be.eqls(expectedResult);
         }
     });
 });

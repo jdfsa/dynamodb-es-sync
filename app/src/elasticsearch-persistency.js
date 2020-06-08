@@ -15,7 +15,7 @@ exports.ElasticSearchRepository = (() => {
          * @param {String} host - endpoint para conexão com o ElasticSearch
          */
         constructor(host) {
-            _host = host || 'localhost:9200';
+            _host = host || 'http://localhost:9200';
             _client = new es.Client({
                 'host': _host
             });

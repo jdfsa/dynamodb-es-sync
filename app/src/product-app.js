@@ -1,14 +1,14 @@
 'use strict';
 
 const util = require('util');
-const ElasticSearchRepository = require('./persistency/elasticsearch-persistency').ElasticSearchRepository;
-const Product = require('./model/product-model').Product;
+const es = require('./elasticsearch-persistency');
+const Product = require('./product-model').Product;
 
 // configura o inspect do 'util' para logar todos os níveis de um objeto
 util.inspect.defaultOptions.depth = null;
 
 // configura a conexão como ElasticSearch
-const es = new ElasticSearchRepository(process.env.ELASTIC_SEARCH_HOST);
+const repository = new es.ElasticSearchRepository(process.env.ELASTIC_SEARCH_HOST);
 
 /**
  * Handler para processamento de eventos gerados pelo DyamoDB
@@ -65,7 +65,7 @@ async function run(event, context) {
             'timestamp': Date.now()
         });
         
-        return es.index('product-index', product.id, body);
+        return repository.index('product-index', product.id, body);
     }));
 }
 

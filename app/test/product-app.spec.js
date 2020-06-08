@@ -1,19 +1,18 @@
 'use strict';
 
-const proxyquire = require('proxyquire');
+const proxyquire = require('proxyquire').noCallThru();
 const chai = require('chai');
 
-const Product = require('./model/product-model').Product;
+const Product = require('../src/product-model').Product;
 
 const expect = chai.expect;
 
 describe('product-app.test', () => {
     
     it('should return empty in case of null event', async () => {
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': mockPersistency(),
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency()
+        });
         try {
             const result = await component.handler(null, null);
             expect(result).to.be.empty;
@@ -24,10 +23,9 @@ describe('product-app.test', () => {
     });
 
     it('should return empty in case of no Records', async () => {
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': mockPersistency(),
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency(),
+        });
         try {
             const result = await component.handler({}, null);
             expect(result).to.be.empty;
@@ -38,10 +36,9 @@ describe('product-app.test', () => {
     });
 
     it('should return empty in case of empty Records', async () => {
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': mockPersistency(),
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency(),
+        });
         try {
             const result = await component.handler({
                 "Records": []
@@ -54,10 +51,9 @@ describe('product-app.test', () => {
     });
 
     it('should ignore in case of no dynamo record', async () => {
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': mockPersistency(),
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency(),
+        });
         try {
             const result = await component.handler({
                 "Records": [{
@@ -72,10 +68,9 @@ describe('product-app.test', () => {
     });
 
     it('should ignore in case of no NewImage in dynamo record', async () => {
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': mockPersistency(),
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency(),
+        });
         try {
             const result = await component.handler({
                 "Records": [{
@@ -107,11 +102,9 @@ describe('product-app.test', () => {
             description: 'fake product description',
             price: 9999.99
         });
-        const persistency = mockPersistency();
-        const component = proxyquire.noCallThru()
-            .load('./product-app', {
-                './persistency/elasticsearch-persistency': persistency,
-            });
+        const component = proxyquire('../src/product-app', {
+            './elasticsearch-persistency': mockPersistency()
+        });
             
         try {
             const result = await component.handler({
@@ -133,12 +126,13 @@ describe('product-app.test', () => {
             }, null);
 
             const mockES = component.es();
-            expect(mockES.indexCalleds[0].index).to.be.equal("product-index");
-            expect(mockES.indexCalleds[0].id).to.be.equal(product.id);
-            expect(mockES.indexCalleds[0].body.id).to.be.equal(product.id);
-            expect(mockES.indexCalleds[0].body.description).to.be.equal(product.description);
-            expect(mockES.indexCalleds[0].body.price).to.be.equal(product.price);
-            expect(mockES.indexCalleds[0].body.timestamp).to.be.not.null;
+            const indexCalleds = mockES.indexCalleds();
+            expect(indexCalleds[0].index).to.be.equal("product-index");
+            expect(indexCalleds[0].id).to.be.equal(product.id);
+            expect(indexCalleds[0].body.id).to.be.equal(product.id);
+            expect(indexCalleds[0].body.description).to.be.equal(product.description);
+            expect(indexCalleds[0].body.price).to.be.equal(product.price);
+            expect(indexCalleds[0].body.timestamp).to.be.not.null;
         }
         catch (e) {
             return Promise.reject(e);
@@ -148,22 +142,33 @@ describe('product-app.test', () => {
 });
 
 function mockPersistency(isError) {
+    return {};
     return {
-        ElasticSearchRepository: class MockElasticSearchRepository {
-            indexCalleds = [];
-            constructor(host) { }
-            index(index, id, body) {
-                const obj = {
-                    index: index,
-                    id: id,
-                    body: body
-                };
-                this.indexCalleds.push(obj);
-                if (isError) {
-                    return Promise.reject(obj);
+        ElasticSearchRepository: (() => {
+            let _indexCalleds = [];
+            class ElasticSearchRepository {
+                constructor(host) {
+                    console.log(host);
                 }
-                return Promise.resolve(obj);
+
+                index(index, id, body) {
+                    const obj = {
+                        index: index,
+                        id: id,
+                        body: body
+                    };
+                    _indexCalleds.push(obj);
+                    if (isError) {
+                        return Promise.reject(obj);
+                    }
+                    return Promise.resolve(obj);
+                }
+
+                indexCalleds() {
+                    return _indexCalleds;
+                }
             }
-        }
+            return ElasticSearchRepository;
+        })()
     };
 }

@@ -2,18 +2,40 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Current File",
+            "program": "${workspaceFolder}/app/node_modules/.bin/jest",
+            "args": [
+                "--runTestsByPath",
+                "${relativeFile}",
+                "--config",
+                "${workspaceFolder}/app/test/jest.config.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/app/node_modules/jest/bin/jest",
+            }
+        },
+        {
             "name": "Jest All",
             "type": "node",
             "request": "launch",
             "runtimeArgs": [
                 "--inspect",
-                "${workspaceRoot}\\src\\node_modules\\jest\\bin\\jest.js",
-                "--runInBand"
+                "${workspaceRoot}\\app\\node_modules\\jest\\bin\\jest.js",
+                "--runInBand",
+                "-i",
+                "product-app.spec.js",
+                "-t",
+                "should process in case of NewImage in dynamo record"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "port": 9229,
-            "cwd": "${workspaceFolder}\\src"
+            "cwd": "${workspaceFolder}\\app"
         },
         {
             "type": "node",
@@ -22,10 +44,10 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceRoot}/src/node_modules/mocha/bin/mocha",
+            "program": "${workspaceRoot}/app/node_modules/mocha/bin/mocha",
             "args": [
-                "${workspaceRoot}/src/*.test.js",
-                "${workspaceRoot}/src/*/*.test.js"
+                "${workspaceRoot}/app/*.test.js",
+                "${workspaceRoot}/app/*/*.test.js"
             ],
             "cwd": "${workspaceRoot}",
             "env": {}
